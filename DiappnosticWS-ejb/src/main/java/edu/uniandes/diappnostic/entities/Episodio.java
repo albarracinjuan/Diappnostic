@@ -34,6 +34,9 @@ public class Episodio implements Serializable {
 	@Column(name="NIVEL_DOLOR")
 	private BigDecimal nivelDolor;
 
+	@Column(name="IP_SERVIDOR")
+	private String ipServidor;
+	
 	@Column(name="PRESENTA_SOMNOLENCIA")
 	private String presentaSomnolencia;
 
@@ -167,6 +170,14 @@ public class Episodio implements Serializable {
 
 	public void setRolUsuario(RolUsuario rolUsuario) {
 		this.rolUsuario = rolUsuario;
+	}
+
+	public String getIpServidor() {
+		return ipServidor;
+	}
+
+	public void setIpServidor(String ipServidor) {
+		this.ipServidor = ipServidor;
 	}
 
 }

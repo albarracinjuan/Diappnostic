@@ -15,5 +15,8 @@
 		<class>edu.uniandes.diappnostic.entities.RolUsuario</class>
 		<class>edu.uniandes.diappnostic.entities.RolUsuarioPK</class>
 		<class>edu.uniandes.diappnostic.entities.Usuario</class>
+		<class>edu.uniandes.diappnostic.entities.Funcionalidad</class>
+		<class>edu.uniandes.diappnostic.entities.PermisoXRol</class>
+		<class>edu.uniandes.diappnostic.entities.PermisoXRolPK</class>
 	</persistence-unit>
 </persistence>

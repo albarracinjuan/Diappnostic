@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,6 +19,8 @@ import com.google.gson.GsonBuilder;
 
 import edu.uniandes.diappnostic.dto.EpisodioDto;
 import edu.uniandes.diappnostic.entities.Episodio;
+import edu.uniandes.diappnostic.exception.DiappnosticException;
+import edu.uniandes.diappnostic.servicios.IGestorUsuario;
 import edu.uniandes.diappnostic.servicios.IServicioGestor;
 
 @Path("/servicios")
@@ -29,6 +32,9 @@ public class DiappnosticRS {
 	 */
 	@EJB
 	private IServicioGestor servicioGestor;
+	
+	@Inject
+	private IGestorUsuario gestorUsuario;
 
 	@GET
 	@Path("estado/")

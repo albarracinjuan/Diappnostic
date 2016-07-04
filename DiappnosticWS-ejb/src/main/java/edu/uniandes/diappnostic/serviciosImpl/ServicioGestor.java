@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import edu.uniandes.diappnostic.dto.EpisodioDto;
 import edu.uniandes.diappnostic.entities.Episodio;
+import edu.uniandes.diappnostic.entities.Usuario;
+import edu.uniandes.diappnostic.exception.DiappnosticException;
 import edu.uniandes.diappnostic.servicios.IServicioGestor;
 
 /**
@@ -32,7 +35,7 @@ public class ServicioGestor implements IServicioGestor {
 	public void registrarEpisodio(EpisodioDto episodioDto) {
 		System.out.print("OK: " + episodioDto.getNumDocUsuario());
 		
-		Query query = em.createNativeQuery("INSERT INTO EPISODIO VALUES (SEQ_EPISODIO.NEXTVAL, to_date(?1, 'dd/mm/yyyy'), ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)");
+		Query query = em.createNativeQuery("INSERT INTO EPISODIO VALUES (SEQ_EPISODIO.NEXTVAL, to_date(?1, 'dd/mm/yyyy'), ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)");
 		query.setParameter(1, episodioDto.getFecha());
 		query.setParameter(2, episodioDto.getNivelDolor());
 		query.setParameter(3, episodioDto.getPresentaSomnolencia());
@@ -43,7 +46,7 @@ public class ServicioGestor implements IServicioGestor {
 		query.setParameter(8, episodioDto.getLocalizacionDolor());
 		query.setParameter(9, episodioDto.getNumDocUsuario());
 		query.setParameter(10, episodioDto.getCodRolUsuario());
-		
+		query.setParameter(11, episodioDto.getIpServidor());
 		query.executeUpdate();
 		em.flush();
 
@@ -85,12 +88,43 @@ public class ServicioGestor implements IServicioGestor {
 					episodio.getLocalizacionDolor().getCodigo(), 
 					episodio.getMedicamento().getCodigo(), 
 					episodio.getRolUsuario().getId().getNumDocUsuario(),					
-					episodio.getRolUsuario().getId().getCodRol());
+					episodio.getRolUsuario().getId().getCodRol(),
+					episodio.getIpServidor());
 			epiDtoList.add(epiDto);
 			
 		}
 		return epiDtoList;
 
+	}
+
+	/**
+	 * Obtiene el usuario correspondiente al número de documento y contrasenia
+	 * ingresados por parámetros.
+	 * @param numDoc
+	 * @param contrasenia
+	 * @return usuario
+	 * @throws DiappnosticException
+	 */
+	@Override
+	public Usuario obtenerUsuario(long numDoc, String contrasenia) throws DiappnosticException {
+		Usuario usuario;
+		
+		Query query = em.createNamedQuery("Usuario.findById");
+		query.setParameter("numDoc", numDoc);
+		
+		//Se obtiene el usuario.
+		try {
+			usuario = (Usuario) query.getSingleResult();
+		} catch (NoResultException e) {
+			throw new DiappnosticException(401, "El usuario no existe en el sistema.");
+		}
+		
+		//Se verifica que la contrasenia corresponda con la ingresada y se retorna el usuario.
+		if (usuario.getContrasena().equals(contrasenia)) {
+			return usuario;
+		}else{
+			throw new DiappnosticException(401, "Contraseña incorrecta.");
+		}
 	}
 
 	
