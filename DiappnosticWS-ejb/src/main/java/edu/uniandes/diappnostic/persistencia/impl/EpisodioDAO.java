@@ -1,45 +1,34 @@
-package edu.uniandes.diappnostic.serviciosImpl;
+package edu.uniandes.diappnostic.persistencia.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import edu.uniandes.diappnostic.dto.EpisodioDto;
 import edu.uniandes.diappnostic.entities.Episodio;
-<<<<<<< HEAD
-import edu.uniandes.diappnostic.entities.Usuario;
-import edu.uniandes.diappnostic.exception.DiappnosticException;
-=======
-import edu.uniandes.diappnostic.persistencia.IEpisodioDAO;
-import edu.uniandes.diappnostic.persistencia.impl.EpisodioDAO;
->>>>>>> b5fc7b907fc4620af91e10708dcd3c4211260caf
-import edu.uniandes.diappnostic.servicios.IServicioGestor;
 
-/**
- * @author 80221940
- *
- */
 @Stateless
-public class ServicioGestor implements IServicioGestor {
-	
+public class EpisodioDAO implements edu.uniandes.diappnostic.persistencia.IEpisodioDAO {
+
 	/**
 	 * 
 	 */
-	private IEpisodioDAO episodioDao;
+	@PersistenceContext(unitName = "DiappnosticWS-ejb")
+	private EntityManager em;
 	
-
 	/**
 	 * registra un episodio en el sistema
-	 * @param episodio informacion del episodio
+	 * @param episodioDto informacion del episodio
 	 */
 	@Override
-	public void registrarEpisodio(EpisodioDto episodioDto) {
+	public void registrarEpisodio(EpisodioDto episodioDto)throws IllegalStateException {
+		System.out.print("OK: " + episodioDto.getNumDocUsuario());
 		
-<<<<<<< HEAD
-		Query query = em.createNativeQuery("INSERT INTO EPISODIO VALUES (SEQ_EPISODIO.NEXTVAL, to_date(?1, 'dd/mm/yyyy'), ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)");
+		Query query = em.createNativeQuery("INSERT INTO EPISODIO VALUES (SEQ_EPISODIO.NEXTVAL, to_date(?1, 'dd/mm/yyyy'), ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)");
 		query.setParameter(1, episodioDto.getFecha());
 		query.setParameter(2, episodioDto.getNivelDolor());
 		query.setParameter(3, episodioDto.getPresentaSomnolencia());
@@ -50,24 +39,20 @@ public class ServicioGestor implements IServicioGestor {
 		query.setParameter(8, episodioDto.getLocalizacionDolor());
 		query.setParameter(9, episodioDto.getNumDocUsuario());
 		query.setParameter(10, episodioDto.getCodRolUsuario());
-		query.setParameter(11, episodioDto.getIpServidor());
+		
 		query.executeUpdate();
 		em.flush();
-
-=======
-		episodioDao.registrarEpisodio(episodioDto);
->>>>>>> b5fc7b907fc4620af91e10708dcd3c4211260caf
 	}
-
+	
 	/**
 	 * Revisar los episodios de dolor del paciente 
 	 * a partir de su no. de identificaci√≥n.
 	 * @param identificacion id del paciente
 	 * @return episodio del paciente
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<EpisodioDto> consultarEpisodios(long identificacion) {
-<<<<<<< HEAD
 		List<Episodio> lista = new ArrayList<Episodio>();		
 		Query query = em.createNamedQuery("Episodio.episodiosUsuario");
 		
@@ -77,7 +62,7 @@ public class ServicioGestor implements IServicioGestor {
 								
 		return mapper(lista);
 	}
-	
+
 	/**
 	 * Realiza el mapeo de la consulta al dto
 	 * @param episodios
@@ -96,49 +81,11 @@ public class ServicioGestor implements IServicioGestor {
 					episodio.getLocalizacionDolor().getCodigo(), 
 					episodio.getMedicamento().getCodigo(), 
 					episodio.getRolUsuario().getId().getNumDocUsuario(),					
-					episodio.getRolUsuario().getId().getCodRol(),
-					episodio.getIpServidor());
+					episodio.getRolUsuario().getId().getCodRol());
 			epiDtoList.add(epiDto);
 			
 		}
 		return epiDtoList;
 
 	}
-
-	/**
-	 * Obtiene el usuario correspondiente al n˙mero de documento y contrasenia
-	 * ingresados por par·metros.
-	 * @param numDoc
-	 * @param contrasenia
-	 * @return usuario
-	 * @throws DiappnosticException
-	 */
-	@Override
-	public Usuario obtenerUsuario(long numDoc, String contrasenia) throws DiappnosticException {
-		Usuario usuario;
-		
-		Query query = em.createNamedQuery("Usuario.findById");
-		query.setParameter("numDoc", numDoc);
-		
-		//Se obtiene el usuario.
-		try {
-			usuario = (Usuario) query.getSingleResult();
-		} catch (NoResultException e) {
-			throw new DiappnosticException(401, "El usuario no existe en el sistema.");
-		}
-		
-		//Se verifica que la contrasenia corresponda con la ingresada y se retorna el usuario.
-		if (usuario.getContrasena().equals(contrasenia)) {
-			return usuario;
-		}else{
-			throw new DiappnosticException(401, "ContraseÒa incorrecta.");
-		}
-	}
-
-	
-=======
-		return episodioDao.consultarEpisodios(identificacion);
-	}
->>>>>>> b5fc7b907fc4620af91e10708dcd3c4211260caf
-	
 }
