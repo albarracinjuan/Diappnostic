@@ -12,8 +12,6 @@
 		<class>edu.uniandes.diappnostic.entities.LocalizacionDolor</class>
 		<class>edu.uniandes.diappnostic.entities.Medicamento</class>
 		<class>edu.uniandes.diappnostic.entities.Rol</class>
-		<class>edu.uniandes.diappnostic.entities.RolUsuario</class>
-		<class>edu.uniandes.diappnostic.entities.RolUsuarioPK</class>
 		<class>edu.uniandes.diappnostic.entities.Usuario</class>
 		<class>edu.uniandes.diappnostic.entities.Funcionalidad</class>
 		<class>edu.uniandes.diappnostic.entities.PermisoXRol</class>

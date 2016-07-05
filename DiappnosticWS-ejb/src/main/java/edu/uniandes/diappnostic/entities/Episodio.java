@@ -2,6 +2,7 @@ package edu.uniandes.diappnostic.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * 
  */
 @Entity
-@NamedQuery(name="Episodio.episodiosUsuario", query="SELECT e FROM Episodio e WHERE e.rolUsuario.id.numDocUsuario = :docUsuario AND e.rolUsuario.id.codRol = :codRol")
+@NamedQuery(name="Episodio.episodiosUsuario", query="SELECT e FROM Episodio e WHERE e.usuario.numDoc = :docUsuario")
 public class Episodio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,16 +28,15 @@ public class Episodio implements Serializable {
 	@Column(name="DESCRIPCION_VOZ")
 	private String descripcionVoz;
 
-	//@Temporal(TemporalType.DATE)
-	@Temporal( TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Date fecha;
+
+	@Column(name="IP_SERVIDOR")
+	private String ipServidor;
 
 	@Column(name="NIVEL_DOLOR")
 	private BigDecimal nivelDolor;
 
-	@Column(name="IP_SERVIDOR")
-	private String ipServidor;
-	
 	@Column(name="PRESENTA_SOMNOLENCIA")
 	private String presentaSomnolencia;
 
@@ -59,13 +59,10 @@ public class Episodio implements Serializable {
 	@JoinColumn(name="COD_MEDICAMENTO")
 	private Medicamento medicamento;
 
-	//bi-directional many-to-one association to RolUsuario
+	//bi-directional many-to-one association to Usuario
 	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name="COD_ROL_USUARIO", referencedColumnName="COD_ROL"),
-		@JoinColumn(name="NUM_DOC_USUARIO", referencedColumnName="NUM_DOC_USUARIO")
-		})
-	private RolUsuario rolUsuario;
+	@JoinColumn(name="NUM_DOC_PACIENTE")
+	private Usuario usuario;
 
 	public Episodio() {
 	}
@@ -100,6 +97,14 @@ public class Episodio implements Serializable {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+	public String getIpServidor() {
+		return this.ipServidor;
+	}
+
+	public void setIpServidor(String ipServidor) {
+		this.ipServidor = ipServidor;
 	}
 
 	public BigDecimal getNivelDolor() {
@@ -164,20 +169,12 @@ public class Episodio implements Serializable {
 		this.medicamento = medicamento;
 	}
 
-	public RolUsuario getRolUsuario() {
-		return this.rolUsuario;
+	public Usuario getUsuario() {
+		return this.usuario;
 	}
 
-	public void setRolUsuario(RolUsuario rolUsuario) {
-		this.rolUsuario = rolUsuario;
-	}
-
-	public String getIpServidor() {
-		return ipServidor;
-	}
-
-	public void setIpServidor(String ipServidor) {
-		this.ipServidor = ipServidor;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

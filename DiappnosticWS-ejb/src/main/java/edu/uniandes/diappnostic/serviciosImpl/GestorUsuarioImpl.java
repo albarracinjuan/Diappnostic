@@ -12,13 +12,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.xml.bind.DatatypeConverter;
 
+import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
+import org.jose4j.jws.*;
+import org.jose4j.keys.AesKey;
+import org.jose4j.lang.JoseException;
+
+import com.google.gson.Gson;
+
+import edu.uniandes.diappnostic.dto.UsuarioDto;
 import edu.uniandes.diappnostic.entities.Usuario;
 import edu.uniandes.diappnostic.exception.DiappnosticException;
+import edu.uniandes.diappnostic.persistencia.IEpisodioDAO;
 import edu.uniandes.diappnostic.servicios.IGestorUsuario;
-import edu.uniandes.diappnostic.servicios.IServicioGestor;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Implementación de la Interface IGestorUsuario
@@ -28,10 +35,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Stateless
 public class GestorUsuarioImpl implements IGestorUsuario {
 	
-	/** Inyección de dependencia del getor de servicio*/
+	/**
+	 * Inyección de dependencia con servicio DAO.
+	 */
 	@Inject
-	private IServicioGestor servicioGestor;
-	
+	private IEpisodioDAO episodioDAO;
 
 	/**
 	 * Retorna el token con la información del usuario.
@@ -39,51 +47,32 @@ public class GestorUsuarioImpl implements IGestorUsuario {
 	@Override
 	public String autenticarUsuario(long numDoc, String contrasenia) throws DiappnosticException {
 		//Se obtiene el usuario.
-		Usuario usuario = servicioGestor.obtenerUsuario(numDoc, contrasenia);		
-		return crearJWT("Millenials", "Millenials", "Usuario: " +  usuario.getNumDoc(), 26751765L);
+		UsuarioDto usuario = episodioDAO.obtenerUsuario(numDoc, contrasenia);
+		String payload = new Gson().toJson(usuario);
+		return crearJWT(payload);
 	}
 	
 	/**
 	 * Crea el token de seguridad.
 	 * @return
 	 */
-	private String crearJWT(String id, String issuer, String subject, long ttlMillis){
-		// create new key
-		SecretKey secretKey = null;
+	private String crearJWT(String payLoad){
+		String serializedJwe = null;
+		
+	     byte[] bytes = {1,2,3};
+		 Key key = new AesKey(bytes);
+		 JsonWebEncryption jwe = new JsonWebEncryption();
+		 jwe.setPayload(payLoad);
+		 jwe.setAlgorithmHeaderValue(KeyManagementAlgorithmIdentifiers.A128KW);
+		 jwe.setEncryptionMethodHeaderParameter(ContentEncryptionAlgorithmIdentifiers.AES_128_CBC_HMAC_SHA_256);
+		 jwe.setKey(key);
 		try {
-		secretKey = KeyGenerator.getInstance("AES").generateKey();
-		} catch (NoSuchAlgorithmException e) {
-		e.printStackTrace();
-		}
-		// get base64 encoded version of the key
-		String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-
-		//The JWT signature algorithm we will be using to sign the token
-		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-		 
-		long nowMillis = System.currentTimeMillis();
-		Date now = new Date(nowMillis);
-		 
-		//We will sign our JWT with our ApiKey secret
-		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(encodedKey);
-		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-		 
-		//Let's set the JWT Claims
-		JwtBuilder builder = Jwts.builder().setId(id)
-		                                .setIssuedAt(now)
-		                                .setSubject(subject)
-		                                .setIssuer(issuer)
-		                                .signWith(signatureAlgorithm, signingKey);
-		 
-		//if it has been specified, let's add the expiration
-		if (ttlMillis >= 0) {
-		    long expMillis = nowMillis + ttlMillis;
-		    Date exp = new Date(expMillis);
-		    builder.setExpiration(exp);
-		}
-		 
-		 //Builds the JWT and serializes it to a compact, URL-safe string
-		return builder.compact();
+		 serializedJwe = jwe.getCompactSerialization();
+		} catch (JoseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return serializedJwe;
 	}
 
 }

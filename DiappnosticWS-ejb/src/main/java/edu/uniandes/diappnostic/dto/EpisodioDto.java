@@ -4,7 +4,6 @@
 package edu.uniandes.diappnostic.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author 80221940
@@ -27,15 +26,13 @@ public class EpisodioDto  implements Serializable {
 	
 	private String presentaSomnolencia;
 	
-	private long acividadFisica;
+	private Long acividadFisica;
 	
-	private long localizacionDolor;
+	private Long localizacionDolor;
 		
-	private long medicamento;
+	private Long medicamento;
 		
-	private long numDocUsuario;
-	
-	private long codRolUsuario;
+	private long numDocPaciente;
 	
 	private String ipServidor;
 	
@@ -54,8 +51,8 @@ public class EpisodioDto  implements Serializable {
 	 */
 	public EpisodioDto(String alimentosConsumidos, String descripcionVoz,
 			String fecha, long nivelDolor, String presentaSomnolencia,
-			long acividadFisica, long localizacionDolor, long medicamento,
-			long numDocUsuario, long codRolUsuario, String ipServidor) {
+			Long acividadFisica, Long localizacionDolor, Long medicamento,
+			long numDocUsuario, String ipServidor) {
 		super();
 		this.alimentosConsumidos = alimentosConsumidos;
 		this.descripcionVoz = descripcionVoz;
@@ -65,8 +62,7 @@ public class EpisodioDto  implements Serializable {
 		this.acividadFisica = acividadFisica;
 		this.localizacionDolor = localizacionDolor;
 		this.medicamento = medicamento;
-		this.numDocUsuario = numDocUsuario;
-		this.codRolUsuario = codRolUsuario;
+		this.numDocPaciente = numDocUsuario;
 		this.ipServidor = ipServidor;
 	}
 
@@ -143,71 +139,57 @@ public class EpisodioDto  implements Serializable {
 	/**
 	 * @return the acividadFisica
 	 */
-	public long getAcividadFisica() {
+	public Long getAcividadFisica() {
 		return acividadFisica;
 	}
 
 	/**
 	 * @param acividadFisica the acividadFisica to set
 	 */
-	public void setAcividadFisica(long acividadFisica) {
+	public void setAcividadFisica(Long acividadFisica) {
 		this.acividadFisica = acividadFisica;
 	}
 
 	/**
 	 * @return the localizacionDolor
 	 */
-	public long getLocalizacionDolor() {
+	public Long getLocalizacionDolor() {
 		return localizacionDolor;
 	}
 
 	/**
 	 * @param localizacionDolor the localizacionDolor to set
 	 */
-	public void setLocalizacionDolor(long localizacionDolor) {
+	public void setLocalizacionDolor(Long localizacionDolor) {
 		this.localizacionDolor = localizacionDolor;
 	}
 
 	/**
 	 * @return the medicamento
 	 */
-	public long getMedicamento() {
+	public Long getMedicamento() {
 		return medicamento;
 	}
 
 	/**
 	 * @param medicamento the medicamento to set
 	 */
-	public void setMedicamento(long medicamento) {
+	public void setMedicamento(Long medicamento) {
 		this.medicamento = medicamento;
 	}
 
 	/**
-	 * @return the numDocUsuario
+	 * @return the numDocPaciente
 	 */
-	public long getNumDocUsuario() {
-		return numDocUsuario;
+	public long getNumDocPaciente() {
+		return numDocPaciente;
 	}
 
 	/**
-	 * @param numDocUsuario the numDocUsuario to set
+	 * @param numDocPaciente the numDocPaciente to set
 	 */
-	public void setNumDocUsuario(long numDocUsuario) {
-		this.numDocUsuario = numDocUsuario;
-	}
-
-	/**
-	 * @return the codRolUsuario
-	 */
-	public long getCodRolUsuario() {
-		return codRolUsuario;
-	}
-
-	/**
-	 * @param codRolUsuario the codRolUsuario to set
-	 */
-	public void setCodRolUsuario(long codRolUsuario) {
-		this.codRolUsuario = codRolUsuario;
+	public void setNumDocPaciente(long numDocPaciente) {
+		this.numDocPaciente = numDocPaciente;
 	}
 
 	/**

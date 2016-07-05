@@ -8,10 +8,6 @@ import java.util.List;
 import javax.ejb.Local;
 
 import edu.uniandes.diappnostic.dto.EpisodioDto;
-import edu.uniandes.diappnostic.entities.Episodio;
-import edu.uniandes.diappnostic.entities.Usuario;
-import edu.uniandes.diappnostic.exception.DiappnosticException;
-
 
 
 /**
@@ -34,7 +30,5 @@ public interface IServicioGestor {
 	 * @return episodio del paciente
 	 */
 	List<EpisodioDto> consultarEpisodios(long identificacion);
-	
-	Usuario obtenerUsuario(long numDoc, String contrasenia) throws DiappnosticException;
 
 }

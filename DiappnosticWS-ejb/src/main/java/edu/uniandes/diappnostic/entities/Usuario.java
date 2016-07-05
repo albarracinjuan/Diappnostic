@@ -2,6 +2,7 @@ package edu.uniandes.diappnostic.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -38,9 +39,23 @@ public class Usuario implements Serializable {
 
 	private String telefono;
 
-	//bi-directional many-to-one association to RolUsuario
+	//bi-directional many-to-one association to Episodio
 	@OneToMany(mappedBy="usuario")
-	private List<RolUsuario> rolUsuarios;
+	private List<Episodio> episodios;
+
+	//bi-directional many-to-one association to Rol
+	@ManyToOne
+	@JoinColumn(name="COD_ROL")
+	private Rol rol;
+
+	//bi-directional many-to-one association to Usuario
+	@ManyToOne
+	@JoinColumn(name="NUM_DOC_MEDICO")
+	private Usuario usuario;
+
+	//bi-directional many-to-one association to Usuario
+	@OneToMany(mappedBy="usuario")
+	private List<Usuario> usuarios;
 
 	public Usuario() {
 	}
@@ -109,26 +124,63 @@ public class Usuario implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public List<RolUsuario> getRolUsuarios() {
-		return this.rolUsuarios;
+	public List<Episodio> getEpisodios() {
+		return this.episodios;
 	}
 
-	public void setRolUsuarios(List<RolUsuario> rolUsuarios) {
-		this.rolUsuarios = rolUsuarios;
+	public void setEpisodios(List<Episodio> episodios) {
+		this.episodios = episodios;
 	}
 
-	public RolUsuario addRolUsuario(RolUsuario rolUsuario) {
-		getRolUsuarios().add(rolUsuario);
-		rolUsuario.setUsuario(this);
+	public Episodio addEpisodio(Episodio episodio) {
+		getEpisodios().add(episodio);
+		episodio.setUsuario(this);
 
-		return rolUsuario;
+		return episodio;
 	}
 
-	public RolUsuario removeRolUsuario(RolUsuario rolUsuario) {
-		getRolUsuarios().remove(rolUsuario);
-		rolUsuario.setUsuario(null);
+	public Episodio removeEpisodio(Episodio episodio) {
+		getEpisodios().remove(episodio);
+		episodio.setUsuario(null);
 
-		return rolUsuario;
+		return episodio;
 	}
 
+	public Rol getRol() {
+		return this.rol;
+	}
+
+	public void setRol(Rol rol) {
+		this.rol = rol;
+	}
+
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<Usuario> getUsuarios() {
+		return this.usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+
+	public Usuario addUsuario(Usuario usuario) {
+		getUsuarios().add(usuario);
+		usuario.setUsuario(this);
+
+		return usuario;
+	}
+
+	public Usuario removeUsuario(Usuario usuario) {
+		getUsuarios().remove(usuario);
+		usuario.setUsuario(null);
+
+		return usuario;
+	}
 }

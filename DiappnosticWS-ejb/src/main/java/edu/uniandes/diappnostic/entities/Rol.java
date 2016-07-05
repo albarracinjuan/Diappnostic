@@ -1,9 +1,9 @@
 package edu.uniandes.diappnostic.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
 
+import javax.persistence.*;
 
 /**
  * The persistent class for the ROL database table.
@@ -19,9 +19,9 @@ public class Rol implements Serializable {
 
 	private String descripcion;
 
-	//bi-directional many-to-one association to RolUsuario
+	//bi-directional many-to-one association to Usuario
 	@OneToMany(mappedBy="rol")
-	private List<RolUsuario> rolUsuarios;
+	private List<Usuario> usuarios;
 
 	public Rol() {
 	}
@@ -40,28 +40,6 @@ public class Rol implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-
-	public List<RolUsuario> getRolUsuarios() {
-		return this.rolUsuarios;
-	}
-
-	public void setRolUsuarios(List<RolUsuario> rolUsuarios) {
-		this.rolUsuarios = rolUsuarios;
-	}
-
-	public RolUsuario addRolUsuario(RolUsuario rolUsuario) {
-		getRolUsuarios().add(rolUsuario);
-		rolUsuario.setRol(this);
-
-		return rolUsuario;
-	}
-
-	public RolUsuario removeRolUsuario(RolUsuario rolUsuario) {
-		getRolUsuarios().remove(rolUsuario);
-		rolUsuario.setRol(null);
-
-		return rolUsuario;
 	}
 
 }
