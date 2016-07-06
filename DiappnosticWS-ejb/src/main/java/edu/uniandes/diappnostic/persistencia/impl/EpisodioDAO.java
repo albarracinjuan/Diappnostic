@@ -88,7 +88,8 @@ public class EpisodioDAO implements IEpisodioDAO {
 					episodio.getLocalizacionDolor() != null ? episodio.getLocalizacionDolor().getCodigo() : null, 
 					episodio.getMedicamento() != null ? episodio.getMedicamento().getCodigo() : null, 
 					episodio.getUsuario().getNumDoc(),					
-					episodio.getIpServidor());
+					episodio.getIpServidor(),
+					null);
 			epiDtoList.add(epiDto);
 			
 		}

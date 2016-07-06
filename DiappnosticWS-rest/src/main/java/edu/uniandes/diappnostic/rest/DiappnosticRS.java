@@ -20,10 +20,11 @@ import com.google.gson.GsonBuilder;
 import edu.uniandes.diappnostic.dto.EpisodioDto;
 import edu.uniandes.diappnostic.dto.LoginDto;
 import edu.uniandes.diappnostic.dto.TokenUsuarioDto;
-import edu.uniandes.diappnostic.entities.Episodio;
+import edu.uniandes.diappnostic.dto.UsuarioDto;
 import edu.uniandes.diappnostic.exception.DiappnosticException;
-import edu.uniandes.diappnostic.servicios.IGestorUsuario;
+import edu.uniandes.diappnostic.servicios.IGestorSeguridad;
 import edu.uniandes.diappnostic.servicios.IServicioGestor;
+import edu.uniandes.diappnostic.util.ConstantesApp;
 
 @Path("/servicios")
 @Stateless
@@ -36,7 +37,7 @@ public class DiappnosticRS {
 	private IServicioGestor servicioGestor;
 	
 	@Inject
-	private IGestorUsuario gestorUsuario;
+	private IGestorSeguridad gestorSeguridad;
 
 	@GET
 	@Path("estado/")
@@ -53,13 +54,29 @@ public class DiappnosticRS {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("registrar/")
 	public Response registrarEpisodio(String jsonRequest) {
+
+		try {
+			jsonRequest = gestorSeguridad.decodificarToken(jsonRequest);	
+		} catch (DiappnosticException e) {
+			return Response.status(e.getCodError()).entity(e.getMensaje()).build();
+		}
+		
+		//Se mapea la información obtenida del token
 		Gson gsonBuilder = new GsonBuilder().create();
 		EpisodioDto episodio = gsonBuilder.fromJson(jsonRequest, EpisodioDto.class);
+		if (episodio.getDatosUsuario() == null) {
+			return Response.status(401).entity("Usuario no identificado.").build();	
+		}
 		
-		servicioGestor.registrarEpisodio(episodio);
-		
-		return Response.status(200).entity(episodio.getNumDocPaciente()).build();
-		
+		//Se verifica que el usuario tenga permisos para acceder a la funcionalidad requerida.
+		if (gestorSeguridad.verificarPermisos(ConstantesApp.FUNCIONALIDAD_REGISTRO, episodio.getDatosUsuario().getPermisos())) {
+			//Se registra el episodio. 
+			servicioGestor.registrarEpisodio(episodio);
+			
+			return Response.status(200).entity(episodio.getNumDocPaciente()).build();			
+		}else{
+			return Response.status(401).entity("El usuario no tiene permisos para registrar episodios.").build();	
+		}
 	}
 	
 	/**
@@ -70,21 +87,17 @@ public class DiappnosticRS {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("autenticar/")
 	public Response autenticarUsuario(String jsonRequest) {
-//		Gson gsonBuilder = new GsonBuilder().create();
-//		LoginDto loginDto = gsonBuilder.fromJson(jsonRequest, LoginDto.class);
-//		
-//		try {
-//			String jwt = gestorUsuario.autenticarUsuario(loginDto.getUsuario(), loginDto.getContrasenia());
-//			TokenUsuarioDto token = new TokenUsuarioDto(jwt);
-//			String response = new Gson().toJson(token);
-//			return Response.status(200).entity(response).build();
-//		} catch (DiappnosticException e) {
-//			return Response.status(e.getCodError()).entity(e).build();
-//		}
-		String dummy = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjoiMTA1MjM5Mjc1NSIsIm5vbWJyZSI6Ikp1YW4gQ2FybG9zIEFsYmFycmFjw61uIiwicm9sIjoyLCJwZXJtaXNvcyI6W3siY29kaWdvIjoiMSIsIm5vbWJyZUZ1bmNpb25hbGlkYWQiOiJSZWdpc3RybyBlcGlzb2RpbyJ9LHsiY29kaWdvIjoiMiIsIm5vbWJyZUZ1bmNpb25hbGlkYWQiOiJDb25zdWx0YSBlcGlzb2Rpb3MgcHJvcGlvcyJ9LHsiY29kaWdvIjoiMyIsIm5"
-				+ "vbWJyZUZ1bmNpb25hbGlkYWQiOiJDb25zdWx0YSBlcGlzb2Rpb3MgcGFjaWVudGVzIn1dfQ.lduh_mwKlDRuKOQnTqP0NwmBJLiACFFprdvze3hDUns";
-		return Response.status(200).entity(dummy).build();
+		Gson gsonBuilder = new GsonBuilder().create();
+		LoginDto loginDto = gsonBuilder.fromJson(jsonRequest, LoginDto.class);
 		
+		try {
+			String jwt = gestorSeguridad.autenticarUsuario(loginDto.getUsuario(), loginDto.getContrasenia());
+			TokenUsuarioDto token = new TokenUsuarioDto(jwt);
+			String response = new Gson().toJson(token);
+			return Response.status(200).entity(response).build();
+		} catch (DiappnosticException e) {
+			return Response.status(e.getCodError()).entity(e.getMensaje()).build();
+		}
 	}
 	
 	/**
@@ -95,12 +108,30 @@ public class DiappnosticRS {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("consultar/{id}")
-	public Response consultarEpisodio(@PathParam("id") long id) {		
-		List<EpisodioDto> listaEpisodios = servicioGestor.consultarEpisodios(id);
-						
-		String response = new Gson().toJson(listaEpisodios);
-		return Response.status(200).entity(response).build();		
+	@Path("consultar/{id}/{token}")
+	public Response consultarEpisodio(@PathParam("id") long id, @PathParam("token") String token) {
+		//Se decodifica el token
+		String jsonRequest = null;
+		try {
+			jsonRequest = gestorSeguridad.decodificarToken(token);	
+		} catch (DiappnosticException e) {
+			return Response.status(e.getCodError()).entity(e.getMensaje()).build();
+		}
+		Gson gsonBuilder = new GsonBuilder().create();
+		UsuarioDto usuarioDto = gsonBuilder.fromJson(jsonRequest, UsuarioDto.class);
+		if (usuarioDto.getPermisos() == null) {
+			return Response.status(401).entity("El usuario no posee ningún permiso.").build();	
+		}
+		//Se verifica que el usuario tenga permisos para acceder a la funcionalidad requerida.
+		if (gestorSeguridad.verificarPermisos(ConstantesApp.FUNCIONALIDAD_CONSULTA_PACIENTES, usuarioDto.getPermisos())) {		
+			List<EpisodioDto> listaEpisodios = servicioGestor.consultarEpisodios(id);
+			
+			String response = gestorSeguridad.crearJWT(new Gson().toJson(listaEpisodios));
+			return Response.status(200).entity(response).build();		
+		}else{
+			return Response.status(401).entity("El usuario no tiene permisos para consultar episodios.").build();	
+		}
+		
 	}
 	
 	

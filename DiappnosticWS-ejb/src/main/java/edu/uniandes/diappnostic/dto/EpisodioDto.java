@@ -36,6 +36,8 @@ public class EpisodioDto  implements Serializable {
 	
 	private String ipServidor;
 	
+	private UsuarioDto datosUsuario;
+	
 	/**
 	 * @param alimentosConsumidos
 	 * @param descripcionVoz
@@ -48,11 +50,12 @@ public class EpisodioDto  implements Serializable {
 	 * @param numDocUsuario
 	 * @param codRolUsuario
 	 * @param ipServidor
+	 * @param datosUsuario
 	 */
 	public EpisodioDto(String alimentosConsumidos, String descripcionVoz,
 			String fecha, long nivelDolor, String presentaSomnolencia,
 			Long acividadFisica, Long localizacionDolor, Long medicamento,
-			long numDocUsuario, String ipServidor) {
+			long numDocUsuario, String ipServidor, UsuarioDto datosUsuario) {
 		super();
 		this.alimentosConsumidos = alimentosConsumidos;
 		this.descripcionVoz = descripcionVoz;
@@ -64,6 +67,7 @@ public class EpisodioDto  implements Serializable {
 		this.medicamento = medicamento;
 		this.numDocPaciente = numDocUsuario;
 		this.ipServidor = ipServidor;
+		this.datosUsuario = datosUsuario;
 	}
 
 	/**
@@ -204,6 +208,20 @@ public class EpisodioDto  implements Serializable {
 	 */
 	public void setIpServidor(String ipServidor) {
 		this.ipServidor = ipServidor;
+	}
+
+	/**
+	 * @return the datosUsuario
+	 */
+	public UsuarioDto getDatosUsuario() {
+		return datosUsuario;
+	}
+
+	/**
+	 * @param datosUsuario the datosUsuario to set
+	 */
+	public void setDatosUsuario(UsuarioDto datosUsuario) {
+		this.datosUsuario = datosUsuario;
 	}
 	
 }
