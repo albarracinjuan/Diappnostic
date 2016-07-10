@@ -15,7 +15,7 @@ import edu.uniandes.diappnostic.dto.EpisodioDto;
  *
  */
 @Local
-public interface IServicioGestor {
+public interface IGestorEpisodios {
 	
 	/**
 	 * registra un episodio en el sistema

@@ -9,14 +9,14 @@ import javax.ejb.Stateless;
 import edu.uniandes.diappnostic.dto.EpisodioDto;
 import edu.uniandes.diappnostic.persistencia.IEpisodioDAO;
 import edu.uniandes.diappnostic.queue.AgregarEpisodioHilo;
-import edu.uniandes.diappnostic.servicios.IServicioGestor;
+import edu.uniandes.diappnostic.servicios.IGestorEpisodios;
 
 /**
  * @author 80221940
  *
  */
 @Stateless
-public class ServicioGestor implements IServicioGestor {
+public class ServicioGestor implements IGestorEpisodios {
 	
 	/**
 	 * 

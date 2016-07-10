@@ -14,6 +14,7 @@ public class ColaEpisodios {
 		try{
 			rrwl.writeLock().lock();
 			cola.add(episodioDto);
+			System.out.println("Tamaño cola: "+cola.size());
 		}finally{
 			rrwl.writeLock().unlock();
 		}

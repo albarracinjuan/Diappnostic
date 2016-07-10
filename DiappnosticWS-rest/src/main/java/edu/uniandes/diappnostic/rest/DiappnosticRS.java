@@ -23,7 +23,7 @@ import edu.uniandes.diappnostic.dto.TokenUsuarioDto;
 import edu.uniandes.diappnostic.dto.UsuarioDto;
 import edu.uniandes.diappnostic.exception.DiappnosticException;
 import edu.uniandes.diappnostic.servicios.IGestorSeguridad;
-import edu.uniandes.diappnostic.servicios.IServicioGestor;
+import edu.uniandes.diappnostic.servicios.IGestorEpisodios;
 import edu.uniandes.diappnostic.util.ConstantesApp;
 
 @Path("/servicios")
@@ -34,7 +34,7 @@ public class DiappnosticRS {
 	 * 
 	 */
 	@EJB
-	private IServicioGestor servicioGestor;
+	private IGestorEpisodios servicioGestor;
 	
 	@Inject
 	private IGestorSeguridad gestorSeguridad;

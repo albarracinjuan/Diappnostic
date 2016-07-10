@@ -15,9 +15,7 @@ public class GestorColaEpisodios{
 	
 	@PostConstruct
 	public void init(){
-		System.out.println("========= 1. Iniciando Singleton GestorColaEpisodios =========");
 		Thread hiloAlmacenamiento = new Thread(new AlmacenarEpisodiosHilo(episodioDao));
 		hiloAlmacenamiento.start();
-		System.out.println("========= 1. Terminando inicio Singleton GestorColaEpisodios =========");
 	}
 }

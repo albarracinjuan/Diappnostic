@@ -33,7 +33,7 @@ public class EpisodioDAO implements IEpisodioDAO {
 	 * @param episodioDto informacion del episodio
 	 */
 	@Override
-	public void registrarEpisodio(EpisodioDto episodioDto)throws IllegalStateException {
+	public void registrarEpisodio(EpisodioDto episodioDto)throws DiappnosticException {
 		System.out.print("OK: " + episodioDto.getNumDocPaciente());
 		
 		Query query = em.createNativeQuery("INSERT INTO EPISODIO VALUES (SEQ_EPISODIO.NEXTVAL, to_date(?1, 'dd/mm/yyyy'), ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)");
@@ -48,8 +48,13 @@ public class EpisodioDAO implements IEpisodioDAO {
 		query.setParameter(9, episodioDto.getNumDocPaciente());
 		query.setParameter(10, episodioDto.getIpServidor());
 		
-		query.executeUpdate();
+		int ret = query.executeUpdate();
 		em.flush();
+		
+		if(ret == 0){
+			System.out.println("No se pudo insertar el episodio "+ret);
+			throw new DiappnosticException(1, "No se pudo insertar el episodio");
+		}
 	}
 	
 	/**

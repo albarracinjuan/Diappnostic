@@ -14,8 +14,7 @@ public class AgregarEpisodioHilo implements Runnable {
 	
 	@Override
 	public void run() {
-		System.out.println("========= 3. Iniciando Thread AgregarEpisodioHilo =========");
-		System.out.println("========= 3.1 Agregando episodio AgregarEpisodioHilo =========");
+		System.out.println("========= 3 Agregando episodio AgregarEpisodioHilo =========");
 		colaEpisodios.agregarEpisodio(episodioDto);
 		System.out.println("========= 3. Finalizando Thread AgregarEpisodioHilo =========");
 	}

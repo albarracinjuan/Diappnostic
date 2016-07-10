@@ -15,7 +15,7 @@ public interface IEpisodioDAO {
 	 * registra un episodio en el sistema
 	 * @param episodioDto informacion del episodio
 	 */
-	void registrarEpisodio(EpisodioDto episodioDto)throws IllegalStateException;
+	void registrarEpisodio(EpisodioDto episodioDto)throws DiappnosticException;
 	
 	/**
 	 * Revisar los episodios de dolor del paciente 
