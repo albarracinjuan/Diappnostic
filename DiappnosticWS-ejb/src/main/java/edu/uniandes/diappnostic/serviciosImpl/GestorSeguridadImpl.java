@@ -15,7 +15,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import edu.uniandes.diappnostic.dto.FuncionalidadDto;
 import edu.uniandes.diappnostic.dto.UsuarioDto;
 import edu.uniandes.diappnostic.exception.DiappnosticException;
-import edu.uniandes.diappnostic.persistencia.IEpisodioDAO;
+import edu.uniandes.diappnostic.persistencia.ISeguridadDAO;
 import edu.uniandes.diappnostic.servicios.IGestorSeguridad;
 
 /**
@@ -30,13 +30,13 @@ public class GestorSeguridadImpl implements IGestorSeguridad {
 	 * Inyección de dependencia con servicio DAO.
 	 */
 	@Inject
-	private IEpisodioDAO episodioDAO;
+	private ISeguridadDAO seguridadDAO;
 	
 
 	@Override
 	public String autenticarUsuario(long numDoc, String contrasenia) throws DiappnosticException {
 		//Se obtiene el usuario.
-		UsuarioDto usuario = episodioDAO.obtenerUsuario(numDoc, contrasenia);
+		UsuarioDto usuario = seguridadDAO.obtenerUsuario(numDoc, contrasenia);
 		String payload = new Gson().toJson(usuario);
 		return crearJWT(payload);
 	}

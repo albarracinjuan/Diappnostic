@@ -16,7 +16,7 @@ import edu.uniandes.diappnostic.servicios.IGestorEpisodios;
  *
  */
 @Stateless
-public class ServicioGestor implements IGestorEpisodios {
+public class GestorEpisodiosImpl implements IGestorEpisodios {
 	
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class ServicioGestor implements IGestorEpisodios {
 	@EJB
 	private IEpisodioDAO episodioDao;
 	
-	private static Logger log = Logger.getLogger(ServicioGestor.class.getName());
+	private static Logger log = Logger.getLogger(GestorEpisodiosImpl.class.getName());
 	/**
 	 * registra un episodio en el sistema
 	 * @param episodio informacion del episodio
